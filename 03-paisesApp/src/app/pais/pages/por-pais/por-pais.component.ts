@@ -5,12 +5,19 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'app-por-pais',
   templateUrl: './por-pais.component.html',
-  styles: [],
+  styles: [
+    `
+      li {
+        cursor: pointer;
+      }
+    `,
+  ],
 })
 export class PorPaisComponent {
   termino = '';
   hayError = false;
   paises: Country[] = [];
+  paisesSugeridos: Country[] = [];
 
   constructor(private paisService: PaisService) {}
 
@@ -29,5 +36,11 @@ export class PorPaisComponent {
 
   sugerencias(termino: string) {
     this.hayError = false;
+    this.paisService.buscarPais(termino).subscribe(
+      (paises) => {
+        this.paisesSugeridos = paises.slice(0, 5);
+      },
+      (err) => (this.paisesSugeridos = [])
+    );
   }
 }
